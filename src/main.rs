@@ -11,8 +11,10 @@ fn main() {
     let rgb_logo = logo.to_rgb8();
     rgb_logo.save("images/output/rgb_logo.png").expect("Failed to save image");
 
-
     get_pixel_color(&img, 32, 52);
+
+    let halfed_image = half_pixels_white(&img);
+    halfed_image.save("images/output/halfed_image.png").expect("Failed to save image");
 }
 
 fn get_pixel_color(image: &image::DynamicImage, x: u32, y: u32) -> Rgba<u8> {
@@ -23,4 +25,18 @@ fn get_pixel_color(image: &image::DynamicImage, x: u32, y: u32) -> Rgba<u8> {
             Rgba([r, g, b, a])
         }
     }
+}
+
+fn half_pixels_white(image: &image::DynamicImage) -> image::DynamicImage {
+    let mut img = image.to_rgb8();
+
+    for y in 0..img.height() {
+        for x in 0..img.width() {
+            if (x + y) % 2 == 0 {
+                img.put_pixel(x, y, image::Rgb([255, 255, 255]));
+            }
+        }
+    }
+
+    image::DynamicImage::ImageRgb8(img)
 }
