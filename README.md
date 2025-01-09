@@ -58,5 +58,28 @@ Afficher dans le terminal la couleur du pixel (32, 52) de l’image de votre cho
 ```
 ![example.jpg](images/example.jpg)
 
-La couleur du pixel (32, 52) est <span style="color:#346513">couleur #346513</span>.
+La couleur du pixel (32, 52) est <span style="color:#346513">couleur #346513</span>, soit 52, 101, 19 en RGB.
 ```rust
+let pixel = img.get_pixel(32, 52);
+println!("Pixel (32, 52) : {:?}", pixel);
+```
+```
+Pixel (32, 52) : Rgba([52, 101, 19, 255])
+```
+
+### Question 5:
+```
+Passer un pixel sur deux d’une image en blanc. Est-ce que l’image obtenue est reconnaissable?
+```
+![image chargee uniquement apres avoir build & run le projet](images/output/halfed_image.png)
+```rust
+let mut halfed_img = img.clone();
+for y in 0..halfed_img.height() {
+    for x in 0..halfed_img.width() {
+        if (x + y) % 2 == 0 {
+            halfed_img.put_pixel(x, y, image::Rgb([255, 255, 255]));
+        }
+    }
+}
+halfed_img.save("images/output/halfed_image.png");
+```
