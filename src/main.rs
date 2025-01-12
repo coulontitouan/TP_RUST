@@ -10,25 +10,25 @@ include!("argh.rs");
 use crate::bayer_matrix::BayerMatrix;
 use crate::color::Color;
 use crate::custom_argh::Args;
-use crate::custom_image::{luminance, DynamicImageExtensions};
+use crate::custom_image::{luminance, open_image, DynamicImageExtensions};
 use crate::error_matrix::{ErrorMatrix, ErrorMatrixType};
 use crate::palette::Palette;
 
 fn build() {
-    let image_iut = image::open("images/iut.jpg").expect("Failed to open image");
+    let image_iut = open_image("iut.jpg");
 
     let rgb_image = image_iut.to_rgb8();
     rgb_image
         .save("images/output/iut.png")
         .expect("Failed to save image");
 
-    let logo_image = image::open("images/logo.png").expect("Failed to open image");
+    let logo_image = open_image("logo.png");
     let rgb_logo = logo_image.to_rgb8();
     rgb_logo
         .save("images/output/rgb_logo.png")
         .expect("Failed to save image");
 
-    let pngalpha_image = image::open("images/pngalpha.png").expect("Failed to open image");
+    let pngalpha_image = open_image("pngalpha.png");
     let rgb_pngalpha = pngalpha_image.to_rgb8();
     rgb_pngalpha
         .save("images/output/rgb_pngalpha.png")
@@ -37,9 +37,17 @@ fn build() {
     let pixel = image_iut.get_pixel(32, 52);
     println!("Pixel (32, 52) : {:?}", pixel);
 
-    let mut half_white = image_iut.clone();
-    half_white.set_half_pixels_white();
-    half_white.save_image_png("half_white");
+    let mut half_white = rgb_image.clone();
+
+    for (x, y, pixel) in half_white.enumerate_pixels_mut() {
+        if (x + y) % 2 == 0 {
+            *pixel = Color::White.rgb();
+        }
+    }
+
+    half_white
+        .save("images/output/half_white.png")
+        .expect("Failed to save image");
 
     println!("Luminance du pixel (32, 52) : {}", luminance(&pixel));
 
@@ -99,7 +107,7 @@ fn build() {
     );
     iut_2vois_5coul.save_image_png("iut_2vois_5coul");
 
-    let david = image::open("images/david.png").expect("Failed to open image");
+    let david = open_image("david.png");
     let mut david_error_floyd_steinberg = david.clone();
     david_error_floyd_steinberg.apply_error_diffusion(
         &black_and_white_palette,

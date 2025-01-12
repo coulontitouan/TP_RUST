@@ -3,8 +3,28 @@ mod custom_image {
     use crate::error_matrix::ErrorMatrix;
     use crate::palette::Palette;
     use crate::{color::Color, custom_image::private_trait::PrivateFunc};
+    use image::io::Reader as ImageReader;
     use image::{DynamicImage, GenericImage, GenericImageView, Rgb, Rgba};
     use rand::random;
+
+    pub fn luminance(color: &Rgba<u8>) -> f32 {
+        let Rgba([r, g, b, _a]) = color;
+        0.2126 * (*r as f32) + 0.7152 * (*g as f32) + 0.0722 * (*b as f32)
+    }
+
+    pub fn distance_euclidienne(&color1: &Rgba<u8>, &color2: &Rgba<u8>) -> f32 {
+        let Rgba([r1, g1, b1, _a1]) = color1;
+        let Rgba([r2, g2, b2, _a2]) = color2;
+        ((r1 as f32 - r2 as f32).powi(2)
+            + (g1 as f32 - g2 as f32).powi(2)
+            + (b1 as f32 - b2 as f32).powi(2))
+        .sqrt()
+    }
+
+    pub fn open_image(path: &str) -> DynamicImage {
+        <DynamicImage as DynamicImageExtensions>::open_image(path)
+            .expect(format!("Failed to open image {}", path).as_str())
+    }
 
     pub enum Filter {
         Half,
@@ -16,6 +36,9 @@ mod custom_image {
     }
 
     pub trait DynamicImageExtensions {
+        fn open_image(path: &str) -> Result<DynamicImage, image::ImageError>;
+        fn save_image(self, image_name: &str, extension: &str);
+        fn save_image_png(self, image_name: &str);
         fn set_half_pixels_white(&mut self) -> ();
         fn set_color_palette(&mut self, palette: crate::Palette) -> ();
         fn set_black_and_white(&mut self) -> ();
@@ -23,12 +46,14 @@ mod custom_image {
         fn set_random_dithering(&mut self) -> ();
         fn set_ordered_dithering(&mut self, order: u8) -> ();
         fn apply_error_diffusion(&mut self, palette: &Palette, error_matrix: &ErrorMatrix);
-        fn save_image(self, image_name: &str, extension: &str);
-        fn save_image_png(self, image_name: &str);
         fn apply_filter(&mut self, filter: Filter);
     }
 
     impl DynamicImageExtensions for DynamicImage {
+        fn open_image(path: &str) -> Result<Self, image::ImageError> {
+            Ok(ImageReader::open(format!("images/{}", path))?.decode()?)
+        }
+
         fn set_half_pixels_white(&mut self) -> () {
             for y in 0..self.height() {
                 for x in 0..self.width() {
@@ -191,20 +216,6 @@ mod custom_image {
                 }
             }
         }
-    }
-
-    pub fn luminance(color: &Rgba<u8>) -> f32 {
-        let Rgba([r, g, b, _a]) = color;
-        0.2126 * (*r as f32) + 0.7152 * (*g as f32) + 0.0722 * (*b as f32)
-    }
-
-    pub fn distance_euclidienne(&color1: &Rgba<u8>, &color2: &Rgba<u8>) -> f32 {
-        let Rgba([r1, g1, b1, _a1]) = color1;
-        let Rgba([r2, g2, b2, _a2]) = color2;
-        ((r1 as f32 - r2 as f32).powi(2)
-            + (g1 as f32 - g2 as f32).powi(2)
-            + (b1 as f32 - b2 as f32).powi(2))
-        .sqrt()
     }
 
     mod private_trait {

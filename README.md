@@ -36,19 +36,20 @@ cargo add image
 ### Question 2
 
 ```
-Pour ouvrir une image depuis un fichier, on utilise ... 
-On obtient un DynamicImage, à quoi correspond ce type? 
-Comment obtenir une image en mode rbg8 ...
-Une image arbitraire peut avoir des pixels de nature différente:
-• avec un nombre variables de canaux (couleurs ou non, transparence ou non)
-• avec un type de donnée différent pour les canaux (entiers sur un octet, flottants ou autres)
-Passer l’image d’entrée en mode rgb8, c’est-à-dire avec 3 canaux R, G, B, représentés chacun par un u8.
+Pour ouvrir une image depuis un fichier, on utilise ImageReader::open("myimage.png")?.decode()?; 
+On obtient un DynamicImage, à quoi correspond ce type? Comment obtenir une image en mode rbg8 à partir de ce DynamicImage?
+
+Indiquer les réponses dans votre README.
 ```
 
-Pour ouvrir une image depuis un fichier, on utilise la fonction open() du crate image.
-
 ```rust
-let image_iut = image::open("images/iut.jpg").expect("Failed to open image");
+use image::io::Reader as ImageReader;
+
+fn open_image(path: &str) -> Result<image::DynamicImage, image::ImageError> {
+    Ok(ImageReader::open(path)?.decode()?)
+}
+
+let image_iut = open_image("images/iut.jpg").expect("Failed to open image");
 ```
 
 [Documentation](https://docs.rs/image/latest/image/enum.DynamicImage.html) :
@@ -117,12 +118,10 @@ Passer un pixel sur deux d’une image en blanc. Est-ce que l’image obtenue es
 ```rust
 use image::GenericImage;
 
-let mut half_white_iut = image_iut.clone();
-for y in 0..half_white_iut.height() {
-    for x in 0..half_white_iut.width() {
-        if (x + y) % 2 == 0 {
-            half_white_iut.put_pixel(x, y, image::Rgba([255; 4]));
-        }
+let mut half_white_iut = rgb_image.clone();
+for (x,y,pixel) in half_white_iut.enumerate_pixels_mut() {
+    if (x + y) % 2 == 0 {
+        *pixel = Rgb([255, 255, 255]);
     }
 }
 half_white_iut.save("images/output/half_white.png");
@@ -151,6 +150,10 @@ Je vais donc utiliser cette formule pour calculer la luminosité d'un pixel.
 ```
 Implémenter le traitement
 ```
+
+Pour la suite du projet, nous avons travailler sur des DynamicImage et non sur des ImageBuffer, les boucles se feront donc sur la hauteur/longueur de l'image et non grâce à la méthode enumerate_pixels_mut().
+
+Il n'y a aucune différence à boucler de la sorte.
 
 ```rust
 let mut new_img = image_iut.to_rgb8().clone(); // L'image de l'iut est un jpg donc on la convertit en rgb8
