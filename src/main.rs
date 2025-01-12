@@ -77,6 +77,7 @@ fn build() {
 
     let mut iut_ordered_dithering = image_iut.clone();
     iut_ordered_dithering.set_ordered_dithering(4);
+    iut_ordered_dithering.save_image_png("iut_ordered_dithering");
 
     let black_and_white_palette = Palette::new(vec![Color::Black, Color::White]);
 

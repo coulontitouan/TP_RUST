@@ -587,6 +587,8 @@ let dithered_image = set_ordered_dithering(&image_iut, 3);
 dithered_image.save("images/output/iut_ordered_dithering.png");
 ```
 
+<img src="images/output/iut_ordered_dithering.png" alt="image chargee uniquement apres avoir build & run le projet | iut_ordered_dithering.png" height="200"/>
+
 ## Partie 6
 
 *Les questions de cette partie seront synthétisées en une seule grande réponse.*
