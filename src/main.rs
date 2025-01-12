@@ -48,7 +48,8 @@ fn build() {
     iut_black_and_white.save_image_png("iut_black_and_white");
 
     let mut iut_red_and_blue = image_iut.clone();
-    iut_red_and_blue.set_monochrome_color_palette(Color::Red, Color::Blue);
+    let custom_blue = Color::new(0, 0, 255);
+    iut_red_and_blue.set_monochrome_color_palette(Color::Red, custom_blue);
     iut_red_and_blue.save_image_png("iut_red_and_blue");
 
     let palette = Palette::new(vec![

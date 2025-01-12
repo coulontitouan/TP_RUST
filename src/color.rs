@@ -11,6 +11,7 @@ mod color {
         Yellow,
         Magenta,
         Cyan,
+        Custom(u8, u8, u8),
     }
 
     impl Color {
@@ -24,6 +25,7 @@ mod color {
                 Color::Yellow => Rgb([255, 255, 0]),
                 Color::Magenta => Rgb([255, 0, 255]),
                 Color::Cyan => Rgb([0, 255, 255]),
+                Color::Custom(r, g, b) => Rgb([*r, *g, *b]),
             }
         }
 
@@ -39,6 +41,10 @@ mod color {
                 "cyan" => Ok(Color::Cyan),
                 _ => Err(format!("Couleur invalide : {}", color)),
             }
+        }
+
+        pub fn new(r: u8, g: u8, b: u8) -> Self {
+            Color::Custom(r, g, b)
         }
     }
 
