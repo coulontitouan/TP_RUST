@@ -1,0 +1,1 @@
+find images/output/ -type f ! -name '.gitignore' -exec rm -v {} +
