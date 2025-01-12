@@ -17,6 +17,8 @@ B_{1} = {\frac{1}{4}}*\begin{bmatrix} 0 & 2 \\ 3 & 1 \end{bmatrix}
 B1 = 1/4 * [[0, 2], [4, 5]]
 ```
 
+[Lien permanent](https://github.com/coulontitouan/TP_RUST/blob/f7181a8c678e56e164210e3fe4bc3946d91f3bff/README.md)
+
 ## Partie 1
 
 ### Question 1
