@@ -19,6 +19,8 @@ B1 = 1/4 * [[0, 2], [4, 5]]
 
 [Lien permanent](https://github.com/coulontitouan/TP_RUST/blob/f7181a8c678e56e164210e3fe4bc3946d91f3bff/README.md)
 
+Le code utilise majoritairement les objets DynamicImage de la bibliothèque image pour manipuler les images. Une autre version utilisant les ImageBuffer est disponible à cette [adresse](https://github.com/coulontitouan/TP_RUST/tree/buffer). Les images sont donc modifiées en utilisant des pointeurs et des références. Cela mene à de légères différences sur les résultats des images finales.
+
 ## Partie 1
 
 ### Question 1
