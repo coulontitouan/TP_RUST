@@ -1,5 +1,3 @@
-use image::{open, DynamicImage, GenericImageView};
-use DynamicImage::ImageRgb8;
 include!("color.rs");
 include!("palette.rs");
 include!("custom_image.rs");
@@ -10,25 +8,27 @@ include!("argh.rs");
 use crate::bayer_matrix::BayerMatrix;
 use crate::color::Color;
 use crate::custom_argh::Args;
-use crate::custom_image::{luminance, open_image, DynamicImageExtensions};
+use crate::custom_image::{luminance, open_handle_error, ImageBufferExtensions};
 use crate::error_matrix::{ErrorMatrix, ErrorMatrixType};
 use crate::palette::Palette;
 
 fn build() {
-    let image_iut = open_image("iut.jpg");
+    let image_iut = open_handle_error("iut.jpg").to_rgb8();
 
-    let rgb_image = image_iut.to_rgb8();
+    let mut rgb_image = image_iut.clone();
     rgb_image
         .save("images/output/iut.png")
         .expect("Failed to save image");
 
-    let logo_image = open_image("logo.png");
+    rgb_image = open_handle_error("output/iut.png").to_rgb8();
+
+    let logo_image = open_handle_error("logo.png");
     let rgb_logo = logo_image.to_rgb8();
     rgb_logo
         .save("images/output/rgb_logo.png")
         .expect("Failed to save image");
 
-    let pngalpha_image = open_image("pngalpha.png");
+    let pngalpha_image = open_handle_error("pngalpha.png");
     let rgb_pngalpha = pngalpha_image.to_rgb8();
     rgb_pngalpha
         .save("images/output/rgb_pngalpha.png")
@@ -107,7 +107,7 @@ fn build() {
     );
     iut_2vois_5coul.save_image_png("iut_2vois_5coul");
 
-    let david = open_image("david.png");
+    let david = open_handle_error("david.png").to_rgb8();
     let mut david_error_floyd_steinberg = david.clone();
     david_error_floyd_steinberg.apply_error_diffusion(
         &black_and_white_palette,
@@ -126,11 +126,7 @@ fn main() {
 
     println!("Input: images/{}", args.get_input());
 
-    let mut image = open(format!("images/{}", args.get_input())).expect("Failed to open image");
-
-    if !image.color().has_alpha() {
-        image = ImageRgb8(image.to_rgb8());
-    }
+    let mut image = open_handle_error(args.get_input()).to_rgb8();
 
     if args.get_filter() {
         let filter = args.get_filter_type();

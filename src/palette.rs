@@ -1,5 +1,5 @@
 mod palette {
-    use image::{Rgb, Rgba};
+    use image::Rgb;
 
     use crate::color::Color;
     use crate::custom_image::distance_euclidienne;
@@ -22,14 +22,12 @@ mod palette {
             self.colors.extend(colors);
         }
 
-        pub fn get_closest_color(&self, color: Rgba<u8>) -> Color {
+        pub fn get_closest_color(&self, color: Rgb<u8>) -> Color {
             let mut min_distance = f32::MAX;
             let mut closest_color = Color::Black;
 
             for palette_color in self.colors.iter() {
-                let Rgb([r, g, b]) = palette_color.rgb();
-                let palette_rgba = Rgba([r, g, b, 255]);
-                let distance = distance_euclidienne(&color, &palette_rgba);
+                let distance = distance_euclidienne(&color, &palette_color.rgb());
 
                 if distance < min_distance {
                     min_distance = distance;
