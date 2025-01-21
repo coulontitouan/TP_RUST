@@ -1,5 +1,11 @@
 mod color {
     use image::Rgb;
+    use lazy_static::lazy_static;
+    use regex::Regex;
+
+    lazy_static! {
+        static ref HEX_COLOR: Regex = Regex::new("#[0-9a-f]{6}").unwrap();
+    }
 
     #[derive(Clone, Copy, Debug)]
     pub enum Color {
@@ -39,7 +45,16 @@ mod color {
                 "yellow" => Ok(Color::Yellow),
                 "magenta" => Ok(Color::Magenta),
                 "cyan" => Ok(Color::Cyan),
-                _ => Err(format!("Couleur invalide : {}", color)),
+                _ => {
+                    if HEX_COLOR.is_match(color) {
+                        let r = u8::from_str_radix(&color[1..3], 16).unwrap();
+                        let g = u8::from_str_radix(&color[3..5], 16).unwrap();
+                        let b = u8::from_str_radix(&color[5..7], 16).unwrap();
+                        Ok(Color::Custom(r, g, b))
+                    } else {
+                        Err(format!("Couleur invalide : {}", color))
+                    }
+                }
             }
         }
 

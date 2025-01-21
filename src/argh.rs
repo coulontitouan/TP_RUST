@@ -31,7 +31,7 @@ mod custom_argh {
         #[argh(option)]
         pub filter: Option<String>,
 
-        /// liste de couleurs pour la palette : black, white, red, green, blue, yellow, magenta, cyan
+        /// liste de couleurs pour la palette : black, white, red, green, blue, yellow, magenta, cyan, ou bien une couleur en hexa (exemple : #ff0000)
         /// exemple : "black,white"
         #[argh(option)]
         pub colors: Option<String>,
